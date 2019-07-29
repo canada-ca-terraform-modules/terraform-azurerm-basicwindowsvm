@@ -65,6 +65,7 @@ TO BE DOCUMENTED
 
 ## History
 
-| Date     | Release    | Change     |
-| -------- | ---------- | ---------- |
-| 20190725 | 20190725.1 | 1st deploy |
+| Date     | Release    | Change                                                     |
+| -------- | ---------- | ---------------------------------------------------------- |
+| 20190729 | 20190729.1 | Fix bug where custo-script would not properly be installed |
+| 20190725 | 20190725.1 | 1st deploy                                                 |

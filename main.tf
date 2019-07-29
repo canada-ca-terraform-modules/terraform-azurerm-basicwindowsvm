@@ -77,3 +77,23 @@ resource azurerm_virtual_machine VM {
   }
   tags = "${var.tags}"
 }
+
+resource "azurerm_virtual_machine_extension" "CustomScriptExtension" {
+
+  count                = var.custom_data == "" ? 0 : 1
+  name                 = "CustomScriptExtension"
+  location             = var.location
+  resource_group_name  = var.resource_group_name
+  virtual_machine_name = azurerm_virtual_machine.VM.name
+  publisher            = "Microsoft.Compute"
+  type                 = "CustomScriptExtension"
+  type_handler_version = "1.8"
+
+  settings = <<SETTINGS
+        {   
+        "commandToExecute": "powershell -command copy-item \"c:\\AzureData\\CustomData.bin\" \"c:\\AzureData\\CustomData.ps1\";\"c:\\AzureData\\CustomData.ps1\""
+        }
+SETTINGS
+
+  tags = var.tags
+}
