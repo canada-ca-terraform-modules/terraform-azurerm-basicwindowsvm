@@ -35,7 +35,7 @@ variable "nic_enable_accelerated_networking" {
   default = false
 }
 variable "dnsServers" {
-  default = ""
+  default = null
 }
 variable "nic_ip_configuration" {
   default = {
