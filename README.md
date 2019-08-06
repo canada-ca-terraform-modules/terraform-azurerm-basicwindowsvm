@@ -30,6 +30,7 @@ module "jumpbox" {
   nic_subnetName                    = "${var.envprefix}-MGMT-PAZ"
   nic_vnetName                      = "${var.envprefix}-Core-NetMGMT-VNET"
   nic_resource_group_name           = "${var.envprefix}-Core-NetMGMT-RG"
+  dnsServers                        = ["168.63.129.16"]
   nic_enable_ip_forwarding          = false
   nic_enable_accelerated_networking = false
   nic_ip_configuration = {
@@ -67,5 +68,6 @@ TO BE DOCUMENTED
 
 | Date     | Release    | Change                                                     |
 | -------- | ---------- | ---------------------------------------------------------- |
+| 20190806 | 20190806.1 | Add custom dns servers support                             |
 | 20190729 | 20190729.1 | Fix bug where custo-script would not properly be installed |
 | 20190725 | 20190725.1 | 1st deploy                                                 |

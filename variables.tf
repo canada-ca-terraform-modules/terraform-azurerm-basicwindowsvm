@@ -34,6 +34,9 @@ variable "nic_enable_ip_forwarding" {
 variable "nic_enable_accelerated_networking" {
   default = false
 }
+variable "dnsServers" {
+  default = ""
+}
 variable "nic_ip_configuration" {
   default = {
     private_ip_address            = "null"

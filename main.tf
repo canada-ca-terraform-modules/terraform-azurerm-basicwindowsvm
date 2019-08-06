@@ -36,6 +36,7 @@ resource azurerm_network_interface NIC {
   enable_ip_forwarding          = "${var.nic_enable_ip_forwarding}"
   enable_accelerated_networking = "${var.nic_enable_accelerated_networking}"
   network_security_group_id     = "${azurerm_network_security_group.NSG.id}"
+  dns_servers                   = "${var.dnsServers}"
   ip_configuration {
     name                          = "ipconfig1"
     subnet_id                     = "${data.azurerm_subnet.subnet.id}"
@@ -43,6 +44,7 @@ resource azurerm_network_interface NIC {
     private_ip_address_allocation = "${var.nic_ip_configuration.private_ip_address_allocation}"
     primary                       = true
   }
+  tags = "${var.tags}"
 }
 
 resource azurerm_virtual_machine VM {
