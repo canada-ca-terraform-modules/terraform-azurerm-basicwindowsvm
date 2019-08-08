@@ -82,14 +82,14 @@ resource azurerm_virtual_machine VM {
 
 resource "azurerm_virtual_machine_extension" "CustomScriptExtension" {
 
-  count                = var.custom_data == "" ? 0 : 1
+  count                = "${var.custom_data == "" ? 0 : 1}"
   name                 = "CustomScriptExtension"
-  location             = var.location
-  resource_group_name  = var.resource_group_name
-  virtual_machine_name = azurerm_virtual_machine.VM.name
+  location             = "${var.location}"
+  resource_group_name  = "${var.resource_group_name}"
+  virtual_machine_name = "${azurerm_virtual_machine.VM.name}"
   publisher            = "Microsoft.Compute"
   type                 = "CustomScriptExtension"
-  type_handler_version = "1.8"
+  type_handler_version = "1.9"
 
   settings = <<SETTINGS
         {   
@@ -97,5 +97,5 @@ resource "azurerm_virtual_machine_extension" "CustomScriptExtension" {
         }
 SETTINGS
 
-  tags = var.tags
+  tags = "${var.tags}"
 }
