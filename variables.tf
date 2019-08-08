@@ -88,6 +88,6 @@ variable "keyvault" {
   }
 }
 
-variable "depends_on" {
+variable "module_depends_on" {
   default = [""]
 }
