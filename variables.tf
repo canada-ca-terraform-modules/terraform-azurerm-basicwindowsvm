@@ -87,7 +87,3 @@ variable "keyvault" {
     resource_group_name = "PwS3-Infra-Keyvault-RG"
   }
 }
-
-variable "module_depends_on" {
-  default = [""]
-}
