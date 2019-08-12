@@ -54,20 +54,13 @@ module "jumpbox" {
 
 ## Parameter Values
 
-TO BE DOCUMENTED
-
-### Tag variable
-
-| Name     | Type   | Required | Value      |
-| -------- | ------ | -------- | ---------- |
-| tagname1 | string | No       | tag1 value |
-| ...      | ...    | ...      | ...        |
-| tagnameX | string | No       | tagX value |
+[Variables details](variables.tf)
 
 ## History
 
-| Date     | Release    | Change                                                     |
-| -------- | ---------- | ---------------------------------------------------------- |
-| 20190806 | 20190806.1 | Add custom dns servers support                             |
-| 20190729 | 20190729.1 | Fix bug where custo-script would not properly be installed |
-| 20190725 | 20190725.1 | 1st deploy                                                 |
+| Date     | Release    | Change                                                                            |
+| -------- | ---------- | --------------------------------------------------------------------------------- |
+| 20190812 | 20190812.1 | Improve documentation. Add testing of module. Improve module dependancy solution. |
+| 20190806 | 20190806.1 | Add custom dns servers support                                                    |
+| 20190729 | 20190729.1 | Fix bug where custo-script would not properly be installed                        |
+| 20190725 | 20190725.1 | 1st deploy                                                                        |

@@ -49,7 +49,7 @@ resource azurerm_network_interface NIC {
 
 resource azurerm_virtual_machine VM {
   name                             = "${var.name}"
-  depends_on                       = ["null_resource.module_depends_on"]
+  depends_on                       = [var.vm_depends_on]
   location                         = "${var.location}"
   resource_group_name              = "${var.resource_group_name}"
   vm_size                          = "${var.vm_size}"
@@ -83,7 +83,7 @@ resource azurerm_virtual_machine VM {
 
 resource "azurerm_virtual_machine_extension" "CustomScriptExtension" {
 
-  count                = "${var.custom_data == "" ? 0 : 1}"
+  count                = "${var.custom_data == null ? 0 : 1}"
   name                 = "CustomScriptExtension"
   location             = "${var.location}"
   resource_group_name  = "${var.resource_group_name}"

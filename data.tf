@@ -1,9 +1,9 @@
 data "azurerm_client_config" "current" {
-  
+
 }
 
 data "azurerm_key_vault" "keyvaultsecrets" {
-  name = "${var.keyvault.name}"
+  name                = "${var.keyvault.name}"
   resource_group_name = "${var.keyvault.resource_group_name}"
 }
 
