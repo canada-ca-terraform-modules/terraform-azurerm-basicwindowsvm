@@ -29,6 +29,17 @@ resource azurerm_network_security_group NSG {
   tags = "${var.tags}"
 }
 
+# If public_ip is true then create resource. If not then do not create any
+resource azurerm_public_ip VM-EXT-PubIP {
+  count               = "${var.public_ip ? 1 : 0}"
+  name                = "${var.name}-EXT-PubIP"
+  location            = "${var.location}"
+  resource_group_name = "${var.resource_group_name}"
+  sku                 = "Standard"
+  allocation_method   = "Static"
+  tags                = "${var.tags}"
+}
+
 resource azurerm_network_interface NIC {
   name                          = "${var.name}-Nic1"
   location                      = "${var.location}"
@@ -42,6 +53,8 @@ resource azurerm_network_interface NIC {
     subnet_id                     = "${data.azurerm_subnet.subnet.id}"
     private_ip_address            = "${var.nic_ip_configuration.private_ip_address}"
     private_ip_address_allocation = "${var.nic_ip_configuration.private_ip_address_allocation}"
+    # If public_ip is true then associate one. If not then do not associate
+    public_ip_address_id          = var.public_ip ? azurerm_public_ip.VM-EXT-PubIP[0].id : ""
     primary                       = true
   }
   tags = "${var.tags}"
@@ -78,55 +91,5 @@ resource azurerm_virtual_machine VM {
     create_option = "${var.storage_os_disk.create_option}"
     os_type       = "${var.storage_os_disk.os_type}"
   }
-  tags = "${var.tags}"
-}
-
-resource "azurerm_virtual_machine_extension" "CustomScriptExtension" {
-
-  count                = "${var.custom_data == null ? 0 : 1}"
-  name                 = "CustomScriptExtension"
-  location             = "${var.location}"
-  resource_group_name  = "${var.resource_group_name}"
-  virtual_machine_name = "${azurerm_virtual_machine.VM.name}"
-  publisher            = "Microsoft.Compute"
-  type                 = "CustomScriptExtension"
-  type_handler_version = "1.9"
-
-  settings = <<SETTINGS
-        {   
-        "commandToExecute": "powershell -command copy-item \"c:\\AzureData\\CustomData.bin\" \"c:\\AzureData\\CustomData.ps1\";\"c:\\AzureData\\CustomData.ps1\""
-        }
-SETTINGS
-
-  tags = "${var.tags}"
-}
-
-resource "azurerm_virtual_machine_extension" "DomainJoinExtension" {
-
-  count                = "${var.domainToJoin == null ? 0 : 1}"
-  name                 = "DomainJoinExtension"
-  location             = "${var.location}"
-  resource_group_name  = "${var.resource_group_name}"
-  virtual_machine_name = "${azurerm_virtual_machine.VM.name}"
-  publisher            = "Microsoft.Compute"
-  type                 = "JsonADDomainExtension"
-  type_handler_version = "1.3"
-
-  settings = <<SETTINGS
-        {  
-          "Name": "${var.domainToJoin.domainName}",
-          "OUPath": "${var.domainToJoin.ouPath}",
-          "User": "${var.domainToJoin.domainName}\\${var.domainToJoin.domainUsername}",
-          "Restart": "true",
-          "Options": "${var.domainToJoin.domainJoinOptions}"
-        }
-  SETTINGS
-
-  protected_settings = <<PROTECTED_SETTINGS
-        {
-          "Password": "${data.azurerm_key_vault_secret.domainPassword[0].value}"
-        }
-  PROTECTED_SETTINGS
-
   tags = "${var.tags}"
 }

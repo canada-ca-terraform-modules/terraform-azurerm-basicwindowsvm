@@ -4,6 +4,12 @@
 
 This module deploys a simple [virtual machine resource](https://docs.microsoft.com/en-us/azure/templates/microsoft.compute/2019-03-01/virtualmachines) with an NSG, 1 NIC and a simple OS Disk.
 
+Optional configuration is deployed in the following order:
+
+1. CustomScriptExtenstion
+2. domainJoin
+3. encryptDisks
+
 ## Security Controls
 
 The following security controls can be met through configuration of this template:

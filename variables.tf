@@ -45,6 +45,12 @@ variable "nic_ip_configuration" {
   }
 }
 
+variable "public_ip" {
+  description = "Does the VM require a public IP. True or false."
+  default = false
+}
+
+
 variable "resource_group_name" {
   description = "Name of the resourcegroup that will contain the VM resources"
 }
@@ -55,11 +61,6 @@ variable "admin_username" {
 
 variable "secretPasswordName" {
   description = "Name of the secret containing the VM admin account password"
-}
-
-variable "custom_data" {
-  description = "Specifies custom data to supply to the machine. On Linux-based systems, this can be used as a cloud-init script. On other systems, this will be copied as a file on disk. Internally, Terraform will base64 encode this value before sending it to the API. The maximum length of the binary array is 65535 bytes."
-  default     = null
 }
 
 variable "vm_size" {
@@ -91,19 +92,42 @@ variable "keyvault" {
   }
 }
 
-variable "domainToJoin" {
-  description = "Object containing the parameters for the domain to join"
-  default = null
+/*
+List of option related variables:
 
-  /*
-  Example of domain to join variable declaration:
+custom_data = "some custom ps1 code to execute. Eg: ${file("serverconfig/jumpbox-init.ps1")}"
 
-  domainToJoin = {
+domainToJoin = {
     domainName           = "test.com"
     domainUsername       = "azureadmin"
     domainUserSecretName = "adDefaultPassword"
     domainJoinOptions    = 3
     ouPath               = ""
-  }
-  */
+
+encryptDisks = true
+
+monitoringAgent = {
+  log_analytics_workspace_name = "somename"
+  log_analytics_workspace_resource_group_name = "someRGName"
 }
+
+antimalware" {
+  RealtimeProtectionEnabled      = "true"
+  ScheduledScanSettingsIsEnabled = "false"
+  ScheduledScanSettingsDay       = "7"
+  ScheduledScanSettingsTime      = "120"
+  ScheduledScanSettingsScanType  = "Quick"
+  ExclusionsExtensions           = ""
+  ExclusionsPaths                = ""
+  ExclusionsProcesses            = ""
+}
+
+shutdownConfig = {
+  autoShutdownStatus = "Enabled"
+  autoShutdownTime = "17:00"
+  autoShutdownTimeZone = "Eastern Standard Time"
+  autoShutdownNotificationStatus = "Disabled"
+}
+
+Those can be set optionally if you want to deploy with optional features
+*/
