@@ -12,6 +12,12 @@ data "azurerm_key_vault_secret" "secretPassword" {
   key_vault_id = "${data.azurerm_key_vault.keyvaultsecrets.id}"
 }
 
+data "azurerm_key_vault_secret" "domainPassword" {
+  count        = "${var.domainToJoin == null ? 0 : 1}"
+  name         = "${var.domainToJoin.domainUserSecretName}"
+  key_vault_id = "${data.azurerm_key_vault.keyvaultsecrets.id}"
+}
+
 data "azurerm_subnet" "subnet" {
   name                 = "${var.nic_subnetName}"
   virtual_network_name = "${var.nic_vnetName}"

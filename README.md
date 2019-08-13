@@ -60,6 +60,7 @@ module "jumpbox" {
 
 | Date     | Release    | Change                                                                            |
 | -------- | ---------- | --------------------------------------------------------------------------------- |
+| 20190813 | 20190813.1 | Add support for joining VM to Active Directory domain                             |
 | 20190812 | 20190812.1 | Improve documentation. Add testing of module. Improve module dependancy solution. |
 | 20190806 | 20190806.1 | Add custom dns servers support                                                    |
 | 20190729 | 20190729.1 | Fix bug where custo-script would not properly be installed                        |

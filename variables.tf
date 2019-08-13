@@ -90,3 +90,20 @@ variable "keyvault" {
     resource_group_name = ""
   }
 }
+
+variable "domainToJoin" {
+  description = "Object containing the parameters for the domain to join"
+  default = null
+
+  /*
+  Example of domain to join variable declaration:
+
+  domainToJoin = {
+    domainName           = "test.com"
+    domainUsername       = "azureadmin"
+    domainUserSecretName = "adDefaultPassword"
+    domainJoinOptions    = 3
+    ouPath               = ""
+  }
+  */
+}
