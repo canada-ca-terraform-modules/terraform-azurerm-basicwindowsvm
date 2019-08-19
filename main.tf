@@ -95,7 +95,7 @@ resource azurerm_virtual_machine VM {
 }
 
 resource "azurerm_managed_disk" "data_disk" {
-  count                = "${var.data_disk_count}"
+  count                = length(var.data_disk_sizes_gb)
   name                 = "${var.name}-DataDisk_${count.index + 1}"
   location             = "${var.location}"
   resource_group_name  = "${var.resource_group_name}"
@@ -106,7 +106,7 @@ resource "azurerm_managed_disk" "data_disk" {
 }
 
 resource "azurerm_virtual_machine_data_disk_attachment" "data_disk_attachment" {
-  count                = "${var.data_disk_count}"
+  count                = length(var.data_disk_sizes_gb)
   managed_disk_id      = "${azurerm_managed_disk.data_disk[count.index].id}"
   virtual_machine_id   = "${azurerm_virtual_machine.VM.id}"
   lun                  = "${count.index + 1}"
