@@ -50,6 +50,15 @@ variable "public_ip" {
   default = false
 }
 
+variable "data_disk_count" {
+  description = "Number of data disks to add to the VM."
+  default = 0
+}
+
+variable "data_disk_sizes_gb" {
+  description = "Data disk sizes in gigabytes"
+  default = ["0"]
+}
 
 variable "resource_group_name" {
   description = "Name of the resourcegroup that will contain the VM resources"
