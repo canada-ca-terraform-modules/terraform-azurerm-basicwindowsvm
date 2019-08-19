@@ -51,7 +51,6 @@ module "jumpbox" {
     version   = "latest"
   }
 
-  data_disk_count                   = 1
   data_disk_sizes_gb                = [20]
 
   keyvault = {
