@@ -93,3 +93,22 @@ resource azurerm_virtual_machine VM {
   }
   tags = "${var.tags}"
 }
+
+resource "azurerm_managed_disk" "data_disk" {
+  count                = "${var.data_disk_count}"
+  name                 = "${var.name}-DataDisk_${count.index + 1}"
+  location             = "${var.location}"
+  resource_group_name  = "${var.resource_group_name}"
+  storage_account_type = "Standard_LRS"
+  create_option        = "Empty"
+  disk_size_gb         = "${var.data_disk_sizes_gb[count.index]}"
+  tags = "${var.tags}"
+}
+
+resource "azurerm_virtual_machine_data_disk_attachment" "data_disk_attachment" {
+  count                = "${var.data_disk_count}"
+  managed_disk_id      = "${azurerm_managed_disk.data_disk[count.index].id}"
+  virtual_machine_id   = "${azurerm_virtual_machine.VM.id}"
+  lun                  = "${count.index + 1}"
+  caching              = "ReadWrite"
+}

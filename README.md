@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This module deploys a simple [virtual machine resource](https://docs.microsoft.com/en-us/azure/templates/microsoft.compute/2019-03-01/virtualmachines) with an NSG, 1 NIC and a simple OS Disk.
+This module deploys a simple [virtual machine resource](https://docs.microsoft.com/en-us/azure/templates/microsoft.compute/2019-03-01/virtualmachines) with an NSG, 1 NIC, a simple OS Disk and optional data disks.
 
 Optional configuration is deployed in the following order:
 
@@ -51,10 +51,14 @@ module "jumpbox" {
     version   = "latest"
   }
 
+  data_disk_count                   = 1
+  data_disk_sizes_gb                = [20]
+
   keyvault = {
     name                = "${var.envprefix}-Core-KV-${substr(sha1("${data.azurerm_client_config.current.subscription_id}${var.envprefix}-Core-Keyvault-RG"), 0, 8)}"
     resource_group_name = "${var.envprefix}-Core-Keyvault-RG"
   }
+  tags = "${var.tags}"
 }
 ```
 
@@ -66,6 +70,7 @@ module "jumpbox" {
 
 | Date     | Release    | Change                                                                            |
 | -------- | ---------- | --------------------------------------------------------------------------------- |
+| 20190819 | 20190819.1 | Add support for one or more managed data disks of configurable size               |
 | 20190813 | 20190813.1 | Add support for joining VM to Active Directory domain                             |
 | 20190812 | 20190812.1 | Improve documentation. Add testing of module. Improve module dependancy solution. |
 | 20190806 | 20190806.1 | Add custom dns servers support                                                    |
