@@ -12,7 +12,12 @@ variable "tags" {
 }
 
 variable "name" {
-  description = "Name of the linux vm"
+  description = "Name of the vm"
+}
+
+variable "data_disk_sizes_gb" {
+  description = "List of data disk sizes in gigabytes required for the VM. EG.: If 3 data disks are required then data_disk_size_gb might look like [40,100,60] for disk 1 of 40 GB, disk 2 of 100 GB and disk 3 of 60 GB"
+  default = []
 }
 
 variable "nic_subnetName" {
@@ -48,16 +53,6 @@ variable "nic_ip_configuration" {
 variable "public_ip" {
   description = "Does the VM require a public IP. True or false."
   default = false
-}
-
-variable "data_disk_count" {
-  description = "Number of data disks to add to the VM."
-  default = 0
-}
-
-variable "data_disk_sizes_gb" {
-  description = "Data disk sizes in gigabytes"
-  default = ["0"]
 }
 
 variable "resource_group_name" {

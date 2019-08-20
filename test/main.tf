@@ -11,7 +11,7 @@ locals {
 
 data "azurerm_client_config" "current" {}
 
-module "test-basiclinuxvm" {
+module "test-basicvm" {
   source = "../."
 
   name                    = "test1"
@@ -23,6 +23,7 @@ module "test-basiclinuxvm" {
   nic_vnetName            = "${azurerm_virtual_network.test-VNET.name}"
   nic_resource_group_name = "${azurerm_resource_group.test-RG.name}"
   vm_size                 = "Standard_B4ms"
+  data_disk_sizes_gb      = [40, 60]
   storage_image_reference = {
     publisher = "MicrosoftWindowsServer"
     offer     = "WindowsServer"
@@ -35,10 +36,10 @@ module "test-basiclinuxvm" {
   }
 }
 
-module "test-basiclinuxvm2" {
+module "test-basicvm2" {
   source = "../."
 
-  vm_depends_on                     = ["${module.test-basiclinuxvm.vm}"]
+  vm_depends_on                     = ["${module.test-basicvm.vm}"]
   name                              = "test2"
   resource_group_name               = "${azurerm_resource_group.test-RG.name}"
   admin_username                    = "azureadmin"
