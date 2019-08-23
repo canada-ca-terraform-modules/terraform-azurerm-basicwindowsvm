@@ -45,27 +45,32 @@ module "jumpbox" {
 
 ## Variables Values
 
-| Name                               | Type   | Required                                      | Value                                                                                                                                                                                                       |
-| ---------------------------------- | ------ | --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| location                           | string | no                                            | Azure location for resources. Default: canadacentral                                                                                                                                                        |
-| tags                               | object | no                                            | Object containing a tag values - [tags pairs](#tag-object)                                                                                                                                                  |
-| name                               | string | yes                                           | Name of the vm                                                                                                                                                                                              |
-| resource_group_name                | string | yes                                           | Name of the resourcegroup that will contain the VM resources                                                                                                                                                |
-| admin_username                     | string | yes                                           | Name of the VM admin account                                                                                                                                                                                |
-| secretPasswordName                 | string | yes                                           | Name of the Keyvault secret containing the VM admin account password                                                                                                                                        |
-| data_disk_sizes_gb                 | list   | no                                            | List of data disk sizes in gigabytes required for the VM. - [data disk](#data-disk-list)                                                                                                                    |
-| nic_subnetName                     | string | yes                                           | Name of the subnet to which the VM NIC will connect to                                                                                                                                                      |
-| nic_vnetName                       | string | yes                                           | Name of the VNET the subnet is part of                                                                                                                                                                      |
-| nic_resource_group_name            | string | Name of the resourcegroup containing the VNET |
-| dnsServers                         | list   | no                                            | List of DNS servers IP addresses as string to use for this NIC, overrides the VNet-level dns server list - [dns servers](#dns-servers-list)                                                                 |
-| nic_enable_ip_forwarding           | bool   | no                                            | Enables IP Forwarding on the NIC. Default: false                                                                                                                                                            |
-| nic_enable_accelerated_networkingg | bool   | no                                            | Enables Azure Accelerated Networking using SR-IOV. Only certain VM instance sizes are supported. Default: false                                                                                             |
-| nic_ip_configuration               | object | no                                            | Defines how a private IP address is assigned. Options are Static or Dynamic. In case of Static also specifiy the desired privat IP address. Default: Dynamic - [ip configuration](#ip-configuration-object) |
-| public_ip                          | bool   | no                                            | Does the VM require a public IP. true or false. Default: false                                                                                                                                              |
-| vm_size                            | string | yes                                           | Specifies the desired size of the Virtual Machine. Eg: Standard_F4                                                                                                                                          |
-| storage_image_reference            | object | no                                            | Specify the storage image used to create the VM. Default is 2016-Datacenter. - [storage image](#storage-image-reference-object)                                                                             |
-| storage_os_disk                    | object | no                                            | Storage OS Disk configuration. Default: ReadWrite from image.                                                                                                                                               |
-| keyvault                           | object | yes                                           | Object containing keyvault resource configuration. - [keyvault](#keyvault-object)                                                                                                                           |
+| Name                               | Type   | Required | Value                                                                                                                                                                                                       |
+| ---------------------------------- | ------ | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| name                               | string | yes      | Name of the vm                                                                                                                                                                                              |
+| resource_group_name                | string | yes      | Name of the resourcegroup that will contain the VM resources                                                                                                                                                |
+| admin_username                     | string | yes      | Name of the VM admin account                                                                                                                                                                                |
+| secretPasswordName                 | string | yes      | Name of the Keyvault secret containing the VM admin account password                                                                                                                                        |
+| nic_subnetName                     | string | yes      | Name of the subnet to which the VM NIC will connect to                                                                                                                                                      |
+| nic_vnetName                       | string | yes      | Name of the VNET the subnet is part of                                                                                                                                                                      |
+| nic_resource_group_name            | string | yes      | Name of the resourcegroup containing the VNET                                                                                                                                                               |
+| vm_size                            | string | yes      | Specifies the desired size of the Virtual Machine. Eg: Standard_F4                                                                                                                                          |
+| keyvault                           | object | yes      | Object containing keyvault resource configuration. - [keyvault](#keyvault-object)                                                                                                                           |
+| location                           | string | no       | Azure location for resources. Default: canadacentral                                                                                                                                                        |
+| tags                               | object | no       | Object containing a tag values - [tags pairs](#tag-object)                                                                                                                                                  |
+| data_disk_sizes_gb                 | list   | no       | List of data disk sizes in gigabytes required for the VM. - [data disk](#data-disk-list)                                                                                                                    |
+| dnsServers                         | list   | no       | List of DNS servers IP addresses as string to use for this NIC, overrides the VNet-level dns server list - [dns servers](#dns-servers-list)                                                                 |
+| nic_enable_ip_forwarding           | bool   | no       | Enables IP Forwarding on the NIC. Default: false                                                                                                                                                            |
+| nic_enable_accelerated_networkingg | bool   | no       | Enables Azure Accelerated Networking using SR-IOV. Only certain VM instance sizes are supported. Default: false                                                                                             |
+| nic_ip_configuration               | object | no       | Defines how a private IP address is assigned. Options are Static or Dynamic. In case of Static also specifiy the desired privat IP address. Default: Dynamic - [ip configuration](#ip-configuration-object) |
+| public_ip                          | bool   | no       | Does the VM require a public IP. true or false. Default: false                                                                                                                                              |
+| storage_image_reference            | object | no       | Specify the storage image used to create the VM. Default is 2016-Datacenter. - [storage image](#storage-image-reference-object)                                                                             |
+| storage_os_disk                    | object | no       | Storage OS Disk configuration. Default: ReadWrite from image.                                                                                                                                               |
+| custom_data                        | string | no       | some custom ps1 code to execute. Eg: ${file("serverconfig/jumpbox-init.ps1")}                                                                                                                               |
+| domainToJoin                       | object | no       | Object containing the configuration related to the Active Directory Domain to join. - [domain to join](#domain-join-object)                                                                                 |
+| encryptDisk                        | bool   | no       | Configure if VM disks should be encrypted with Bitlocker. Default false                                                                                                                                     |
+| monitoringAgent                    | object | no       | Configure Azure monitoring on VM. Requires configured log analytics workspace. - [monitoring agent](monitoring-agent-object)                                                                                |
+| antimalware                        | object | no       | Configure Azure antimalware on VM. [antimalware](antimalware-object)                                                                                                                                        |
 
 ### tag object
 
@@ -150,6 +155,72 @@ Example variable:
 keyvault = {
   name                = "some-keyvault-name"
   resource_group_name = "some-resource-group-name"
+}
+```
+
+### domain join object
+
+| Name                 | Type    | Required | Value                                                       |
+| -------------------- | ------- | -------- | ----------------------------------------------------------- |
+| domainToJoin         | string  | Yes      | Name of the domain to join. Eg. test.gc.ca.local            |
+| domainUsername       | string  | Yes      | Name of domain admin account to use to join the domain      |
+| domainUserSecretName | string  | Yes      | Name of secret containing the domain admin account password |
+| domainJoinOptions    | integer | Yes      | Domain join option. Recommended value: 3                    |
+| ouPath               | string  | Yes      | Path for the domain ou. Leave empty in most cases. Eg: ""   |
+
+Example variable:
+
+```hcl
+domainToJoin = {
+  domainName           = "test.com"
+  domainUsername       = "azureadmin"
+  domainUserSecretName = "adDefaultPassword"
+  domainJoinOptions    = 3
+  ouPath               = ""
+}
+```
+
+### monitoring agent object
+
+| Name                                        | Type   | Required | Value                                                                |
+| ------------------------------------------- | ------ | -------- | -------------------------------------------------------------------- |
+| log_analytics_workspace_name                | string | Yes      | Name of the log analytics workspace that the VM will send logs to.   |
+| log_analytics_workspace_resource_group_name | string | Yes      | Name of the resource group that contain the log analytics workspace. |
+
+Example variable:
+
+```hcl
+monitoringAgent = {
+  log_analytics_workspace_name                = "somename"
+  log_analytics_workspace_resource_group_name = "someRGName"
+}
+```
+
+### antimalware object
+
+| Name                         | Type   | Required | Value                                                                                                                       |
+| ---------------------------- | ------ | -------- | --------------------------------------------------------------------------------------------------------------------------- |
+| RealtimeProtectionEnabled    | string | Yes      | Indicates whether or not real time protection is enabled - true or false                                                    |
+| ScheduledScanSettingsEnabled | string | Yes      | Indicates whether or not custom scheduled scan settings are enabled - true or false                                         |
+| ScheduledScanSettingsDay     | string | Yes      | Day of the week for scheduled scan (1-Sunday, 2-Monday, ..., 7-Saturday)                                                    |
+| ScheduledScanSettingsTime    | string | Yes      | When to perform the scheduled scan, measured in minutes from midnight (0-1440). For example: 0 = 12AM, 60 = 1AM, 120 = 2AM. |
+| ScheduledScanSettingsType    | string | Yes      | Indicates whether scheduled scan setting type is set to Quick or Full - Quick or Full                                       |
+| ExclusionExtensions          | string | Yes      | Semicolon delimited list of file extensions to exclude from scanning. Eg: .txt; .ps1                                        |
+| ExclusionPaths               | string | Yes      | Semicolon delimited list of file paths or locations to exclude from scanning. Eg: c:\\Users                                 |
+| ExclusionProcesses           | string | Yes      | Semicolon delimited list of process names to exclude from scanning. Eg: w3wp.exe;explorer.exe                               |
+
+Example variable:
+
+```hcl
+antimalware" {
+  RealtimeProtectionEnabled      = "true"
+  ScheduledScanSettingsIsEnabled = "false"
+  ScheduledScanSettingsDay       = "7"
+  ScheduledScanSettingsTime      = "120"
+  ScheduledScanSettingsScanType  = "Quick"
+  ExclusionsExtensions           = ""
+  ExclusionsPaths                = ""
+  ExclusionsProcesses            = ""
 }
 ```
 
