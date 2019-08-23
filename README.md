@@ -2,13 +2,7 @@
 
 ## Introduction
 
-This module deploys a simple [virtual machine resource](https://docs.microsoft.com/en-us/azure/templates/microsoft.compute/2019-03-01/virtualmachines) with an NSG, 1 NIC, a simple OS Disk and optional data disks.
-
-Optional configuration is deployed in the following order:
-
-1. CustomScriptExtenstion
-2. domainJoin
-3. encryptDisks
+This module deploys a simple [virtual machine resource](https://docs.microsoft.com/en-us/azure/templates/microsoft.compute/2019-03-01/virtualmachines) with an NSG, 1 NIC, a simple OS Disk. Multiple optional configuration can be applied. See [variables values](#Variables-Values) for details.
 
 ## Security Controls
 
