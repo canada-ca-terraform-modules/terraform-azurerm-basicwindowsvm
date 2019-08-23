@@ -1,4 +1,4 @@
-# Terraform Basic Virtual Machine
+# Terraform Basic Windows Virtual Machine
 
 ## Introduction
 
