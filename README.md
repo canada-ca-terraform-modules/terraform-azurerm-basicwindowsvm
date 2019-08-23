@@ -18,9 +18,15 @@ The following security controls can be met through configuration of this templat
 
 ## Dependancies
 
-* [Resource Groups](https://github.com/canada-ca-azure-templates/resourcegroups/blob/master/readme.md)
-* [Keyvault](https://github.com/canada-ca-azure-templates/keyvaults/blob/master/readme.md)
-* [VNET-Subnet](https://github.com/canada-ca-azure-templates/vnet-subnet/blob/master/readme.md)
+Hard:
+
+* Resource Groups
+* Keyvault
+* VNET-Subnet
+
+Optional (depending on options configured):
+
+* log analytics workspace
 
 ## Usage
 
