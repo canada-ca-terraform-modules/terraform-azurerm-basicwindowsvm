@@ -26,45 +26,57 @@ The following security controls can be met through configuration of this templat
 
 ```terraform
 module "jumpbox" {
-  source = "github.com/canada-ca-terraform-modules/basicwindowsvm?ref=20190725.1"
-  #source = "./terraform-azurerm-basicwindowsvm"
+  source = "github.com/canada-ca-terraform-modules/basicwindowsvm?ref=20190819.1"
 
   name                              = "jumpbox"
-  resource_group_name               = "${var.envprefix}-MGMT-RDS-RG"
-  admin_username                    = "azureadmin"
-  secretPasswordName                = "server2016DefaultPassword"
-  nic_subnetName                    = "${var.envprefix}-MGMT-PAZ"
-  nic_vnetName                      = "${var.envprefix}-Core-NetMGMT-VNET"
-  nic_resource_group_name           = "${var.envprefix}-Core-NetMGMT-RG"
-  dnsServers                        = ["168.63.129.16"]
-  nic_enable_ip_forwarding          = false
-  nic_enable_accelerated_networking = false
+  resource_group_name               = "some-RG-Name"
+  admin_username                    = "someusername"
+  secretPasswordName                = "somekeyvaultsecretname"
+  nic_subnetName                    = "some-subnet-name"
+  nic_vnetName                      = "some-vnet-name"
+  nic_resource_group_name           = "some-vnet-resourcegroup-name"
   nic_ip_configuration = {
     private_ip_address            = ""
     private_ip_address_allocation = "Dynamic"
   }
   vm_size = "Standard_D2_v3"
-  storage_image_reference = {
-    publisher = "MicrosoftWindowsServer"
-    offer     = "WindowsServer"
-    sku       = "2016-Datacenter"
-    version   = "latest"
-  }
-
-  data_disk_count                   = 1
-  data_disk_sizes_gb                = [20]
-
+  data_disk_sizes_gb                = [60,80]
   keyvault = {
-    name                = "${var.envprefix}-Core-KV-${substr(sha1("${data.azurerm_client_config.current.subscription_id}${var.envprefix}-Core-Keyvault-RG"), 0, 8)}"
-    resource_group_name = "${var.envprefix}-Core-Keyvault-RG"
+    name                = "some-keyvault-name"
+    resource_group_name = "some-keyvault-resourcegroup-name"
   }
-  tags = "${var.tags}"
 }
 ```
 
-## Parameter Values
+## Variables Values
+
+| Name               | Type   | Required | Value                                                                                    |
+| ------------------ | ------ | -------- | ---------------------------------------------------------------------------------------- |
+| location           | string | no       | Azure location for resources. Default: canadacentral                                     |
+| tags               | object | no       | Object containing a tag values - [tags pairs](#tag-object)                               |
+| name               | string | yes      | Name of the vm                                                                           |
+| data_disk_sizes_gb | list   | no       | List of data disk sizes in gigabytes required for the VM. - [data disk](#data-disk-list) |
 
 [Variables details](variables.tf)
+
+### tag object
+
+Example tag variable:
+
+```hcl
+tags = {
+  tag1 = "somevalue"
+  tag2 = "someothervalue"
+}
+```
+
+### data disk list
+
+Example data_disk_size_gb example. The following example would deploy 3 data disks. One one of 40GB, one of 100GB and a last of 60GB:
+
+```hcl
+data_disk_size_gb = [40,100,60]
+```
 
 ## History
 
