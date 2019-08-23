@@ -1,3 +1,13 @@
+/*
+Example:
+
+monitoringAgent = {
+  log_analytics_workspace_name                = "somename"
+  log_analytics_workspace_resource_group_name = "someRGName"
+}
+
+*/
+
 variable "monitoringAgent" {
   description = "Should the VM be monitored"
   default     = null

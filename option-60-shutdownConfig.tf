@@ -1,3 +1,15 @@
+/*
+Example:
+
+shutdownConfig = {
+  autoShutdownStatus = "Enabled"
+  autoShutdownTime = "17:00"
+  autoShutdownTimeZone = "Eastern Standard Time"
+  autoShutdownNotificationStatus = "Disabled"
+}
+
+*/
+
 variable "shutdownConfig" {
   default = null
 }
