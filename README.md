@@ -35,12 +35,7 @@ module "jumpbox" {
   nic_subnetName                    = "some-subnet-name"
   nic_vnetName                      = "some-vnet-name"
   nic_resource_group_name           = "some-vnet-resourcegroup-name"
-  nic_ip_configuration = {
-    private_ip_address            = ""
-    private_ip_address_allocation = "Dynamic"
-  }
-  vm_size = "Standard_D2_v3"
-  data_disk_sizes_gb                = [60,80]
+  vm_size                           = "Standard_D2_v3"
   keyvault = {
     name                = "some-keyvault-name"
     resource_group_name = "some-keyvault-resourcegroup-name"
@@ -50,14 +45,27 @@ module "jumpbox" {
 
 ## Variables Values
 
-| Name               | Type   | Required | Value                                                                                    |
-| ------------------ | ------ | -------- | ---------------------------------------------------------------------------------------- |
-| location           | string | no       | Azure location for resources. Default: canadacentral                                     |
-| tags               | object | no       | Object containing a tag values - [tags pairs](#tag-object)                               |
-| name               | string | yes      | Name of the vm                                                                           |
-| data_disk_sizes_gb | list   | no       | List of data disk sizes in gigabytes required for the VM. - [data disk](#data-disk-list) |
-
-[Variables details](variables.tf)
+| Name                               | Type   | Required                                      | Value                                                                                                                                                                                                       |
+| ---------------------------------- | ------ | --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| location                           | string | no                                            | Azure location for resources. Default: canadacentral                                                                                                                                                        |
+| tags                               | object | no                                            | Object containing a tag values - [tags pairs](#tag-object)                                                                                                                                                  |
+| name                               | string | yes                                           | Name of the vm                                                                                                                                                                                              |
+| resource_group_name                | string | yes                                           | Name of the resourcegroup that will contain the VM resources                                                                                                                                                |
+| admin_username                     | string | yes                                           | Name of the VM admin account                                                                                                                                                                                |
+| secretPasswordName                 | string | yes                                           | Name of the Keyvault secret containing the VM admin account password                                                                                                                                        |
+| data_disk_sizes_gb                 | list   | no                                            | List of data disk sizes in gigabytes required for the VM. - [data disk](#data-disk-list)                                                                                                                    |
+| nic_subnetName                     | string | yes                                           | Name of the subnet to which the VM NIC will connect to                                                                                                                                                      |
+| nic_vnetName                       | string | yes                                           | Name of the VNET the subnet is part of                                                                                                                                                                      |
+| nic_resource_group_name            | string | Name of the resourcegroup containing the VNET |
+| dnsServers                         | list   | no                                            | List of DNS servers IP addresses as string to use for this NIC, overrides the VNet-level dns server list - [dns servers](#dns-servers-list)                                                                 |
+| nic_enable_ip_forwarding           | bool   | no                                            | Enables IP Forwarding on the NIC. Default: false                                                                                                                                                            |
+| nic_enable_accelerated_networkingg | bool   | no                                            | Enables Azure Accelerated Networking using SR-IOV. Only certain VM instance sizes are supported. Default: false                                                                                             |
+| nic_ip_configuration               | object | no                                            | Defines how a private IP address is assigned. Options are Static or Dynamic. In case of Static also specifiy the desired privat IP address. Default: Dynamic - [ip configuration](#ip-configuration-object) |
+| public_ip                          | bool   | no                                            | Does the VM require a public IP. true or false. Default: false                                                                                                                                              |
+| vm_size                            | string | yes                                           | Specifies the desired size of the Virtual Machine. Eg: Standard_F4                                                                                                                                          |
+| storage_image_reference            | object | no                                            | Specify the storage image used to create the VM. Default is 2016-Datacenter. - [storage image](#storage-image-reference-object)                                                                             |
+| storage_os_disk                    | object | no                                            | Storage OS Disk configuration. Default: ReadWrite from image.                                                                                                                                               |
+| keyvault                           | object | yes                                           | Object containing keyvault resource configuration. - [keyvault](#keyvault-object)                                                                                                                           |
 
 ### tag object
 
@@ -67,15 +75,82 @@ Example tag variable:
 tags = {
   tag1 = "somevalue"
   tag2 = "someothervalue"
+  .
+  .
+  .
+  tagx = "some other value"
 }
 ```
 
 ### data disk list
 
-Example data_disk_size_gb example. The following example would deploy 3 data disks. One one of 40GB, one of 100GB and a last of 60GB:
+Example data_disk_size_gb variable. The following example would deploy 3 data disks. One one of 40GB, one of 100GB and a last of 60GB:
 
 ```hcl
 data_disk_size_gb = [40,100,60]
+```
+
+### dns servers list
+
+Example dnsServers variable. The following example would configure 2 dns servers:
+
+```hcl
+dnsServers = [
+  "10.20.30.40",
+  "10.20.30.41
+]
+```
+
+### ip configuration object
+
+| Name                          | Type   | Required | Value                                           |
+| ----------------------------- | ------ | -------- | ----------------------------------------------- |
+| private_ip_address            | string | yes      | Static IP desired. Set to null if using Dynamic |
+| private_ip_address_allocation | string | yes      | Set to either Dynamic or Static                 |
+
+Example variable for static ip:
+
+```hcl
+nic_ip_configuration = {
+  private_ip_address            = "10.20.30.42"
+  private_ip_address_allocation = "Static"
+}
+```
+
+### #storage image reference object
+
+| Name      | Type       | Required           | Value                                                                                              |
+| --------- | ---------- | ------------------ | -------------------------------------------------------------------------------------------------- |
+| publisher | string     | yes                | The image publisher.                                                                               |
+| offer     | string     | yes                | Specifies the offer of the platform image or marketplace image used to create the virtual machine. |
+| sku       | string     | yes                | The image SKU.                                                                                     |
+| version   | string yes | The image version. |
+
+Example variable:
+
+```hcl
+storage_image_reference = {
+  publisher = "MicrosoftWindowsServer"
+  offer     = "WindowsServer"
+  sku       = "2016-Datacenter"
+  version   = "latest"
+}
+```
+
+### keyvault object
+
+| Name                | Type   | Required | Value                                                    |
+| ------------------- | ------ | -------- | -------------------------------------------------------- |
+| name                | string | yes      | Name of the keyvault resource                            |
+| resource_group_name | string | yes      | Name of the resource group where the keyvault is located |
+
+Example variable:
+
+```hcl
+keyvault = {
+  name                = "some-keyvault-name"
+  resource_group_name = "some-resource-group-name"
+}
 ```
 
 ## History
