@@ -1,3 +1,10 @@
+/*
+Example:
+
+diskEncrypt = true
+
+*/
+
 variable "encryptDisks" {
   description = "Should the VM disks be encrypted"
   default     = false

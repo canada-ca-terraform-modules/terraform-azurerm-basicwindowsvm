@@ -69,8 +69,9 @@ module "jumpbox" {
 | custom_data                        | string | no       | some custom ps1 code to execute. Eg: ${file("serverconfig/jumpbox-init.ps1")}                                                                                                                               |
 | domainToJoin                       | object | no       | Object containing the configuration related to the Active Directory Domain to join. - [domain to join](#domain-join-object)                                                                                 |
 | encryptDisk                        | bool   | no       | Configure if VM disks should be encrypted with Bitlocker. Default false                                                                                                                                     |
-| monitoringAgent                    | object | no       | Configure Azure monitoring on VM. Requires configured log analytics workspace. - [monitoring agent](monitoring-agent-object)                                                                                |
-| antimalware                        | object | no       | Configure Azure antimalware on VM. [antimalware](antimalware-object)                                                                                                                                        |
+| monitoringAgent                    | object | no       | Configure Azure monitoring on VM. Requires configured log analytics workspace. - [monitoring agent](#monitoring-agent-object)                                                                               |
+| antimalware                        | object | no       | Configure Azure antimalware on VM. - [antimalware](#antimalware-object)                                                                                                                                     |
+| shutdownConfig                     | object | no       | Configure desired VM shutdown time - [shutdown config](#shutdown-config-object)                                                                                                                             |
 
 ### tag object
 
@@ -221,6 +222,26 @@ antimalware" {
   ExclusionsExtensions           = ""
   ExclusionsPaths                = ""
   ExclusionsProcesses            = ""
+}
+```
+
+### shutdown config object
+
+| Name                           | Type   | Required | Value                                                                                          |
+| ------------------------------ | ------ | -------- | ---------------------------------------------------------------------------------------------- |
+| autoShutdownStatus             | string | Yes      | Name of the VM                                                                                 |
+| autoShutdownTime               | string | Yes      | The time of day the schedule will occur. Eg: 17:00                                             |
+| autoShutdownTimeZone           | string | Yes      | Timezone ID. Eg: Eastern Standard Time                                                         |
+| autoShutdownNotificationStatus | string | Yes      | If notifications are enabled for this schedule (i.e. Enabled, Disabled). - Enabled or Disabled |
+
+Example variable:
+
+```hcl
+shutdownConfig = {
+  autoShutdownStatus = "Enabled"
+  autoShutdownTime = "17:00"
+  autoShutdownTimeZone = "Eastern Standard Time"
+  autoShutdownNotificationStatus = "Disabled"
 }
 ```
 
