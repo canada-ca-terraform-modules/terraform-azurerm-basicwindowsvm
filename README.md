@@ -79,12 +79,12 @@ Example tag variable:
 
 ```hcl
 tags = {
-  tag1 = "somevalue"
-  tag2 = "someothervalue"
+  "tag1name" = "somevalue"
+  "tag2name" = "someothervalue"
   .
   .
   .
-  tagx = "some other value"
+  "tagXname" = "some other value"
 }
 ```
 
@@ -101,10 +101,7 @@ data_disk_size_gb = [40,100,60]
 Example dnsServers variable. The following example would configure 2 dns servers:
 
 ```hcl
-dnsServers = [
-  "10.20.30.40",
-  "10.20.30.41
-]
+dnsServers = ["10.20.30.40","10.20.30.41]
 ```
 
 ### ip configuration object
@@ -249,6 +246,7 @@ shutdownConfig = {
 
 | Date     | Release    | Change                                                                            |
 | -------- | ---------- | --------------------------------------------------------------------------------- |
+| 20190823 |            | Update documentation                                                              |
 | 20190819 | 20190819.1 | Add support for one or more managed data disks of configurable size               |
 | 20190813 | 20190813.1 | Add support for joining VM to Active Directory domain                             |
 | 20190812 | 20190812.1 | Improve documentation. Add testing of module. Improve module dependancy solution. |
