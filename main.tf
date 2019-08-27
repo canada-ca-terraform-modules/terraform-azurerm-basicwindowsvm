@@ -90,6 +90,7 @@ resource azurerm_virtual_machine VM {
     caching       = "${var.storage_os_disk.caching}"
     create_option = "${var.storage_os_disk.create_option}"
     os_type       = "${var.storage_os_disk.os_type}"
+    disk_size_gb  = "${var.storage_os_disk.disk_size_gb}"
   }
     # This is where the magic to dynamically create storage disk operate
   dynamic "storage_data_disk" {
