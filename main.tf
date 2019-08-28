@@ -31,8 +31,8 @@ resource azurerm_network_security_group NSG {
 
 # If public_ip is true then create resource. If not then do not create any
 resource azurerm_public_ip VM-EXT-PubIP {
-  count               = "${var.public_ip ? 1 : 0}"
-  name                = "${var.name}-EXT-PubIP"
+  count               = var.public_ip ? length(var.nic_ip_configuration.private_ip_address_allocation) : 0
+  name                = "${var.name}-EXT-PubIP${count.index + 1}"
   location            = "${var.location}"
   resource_group_name = "${var.resource_group_name}"
   sku                 = "Standard"
@@ -48,14 +48,16 @@ resource azurerm_network_interface NIC {
   enable_accelerated_networking = "${var.nic_enable_accelerated_networking}"
   network_security_group_id     = "${azurerm_network_security_group.NSG.id}"
   dns_servers                   = "${var.dnsServers}"
-  ip_configuration {
-    name                          = "ipconfig1"
-    subnet_id                     = "${data.azurerm_subnet.subnet.id}"
-    private_ip_address            = "${var.nic_ip_configuration.private_ip_address}"
-    private_ip_address_allocation = "${var.nic_ip_configuration.private_ip_address_allocation}"
-    # If public_ip is true then associate one. If not then do not associate
-    public_ip_address_id          = var.public_ip ? azurerm_public_ip.VM-EXT-PubIP[0].id : ""
-    primary                       = true
+  dynamic "ip_configuration" {
+    for_each = var.nic_ip_configuration.private_ip_address_allocation
+    content {
+      name                          = "ipconfig${ip_configuration.key + 1}"
+      subnet_id                     = data.azurerm_subnet.subnet.id
+      private_ip_address            = var.nic_ip_configuration.private_ip_address[ip_configuration.key]
+      private_ip_address_allocation = var.nic_ip_configuration.private_ip_address_allocation[ip_configuration.key]
+      public_ip_address_id          = var.public_ip ? azurerm_public_ip.VM-EXT-PubIP[ip_configuration.key].id : ""
+      primary                       = ip_configuration.key == 0 ? true : false
+    }
   }
   tags = "${var.tags}"
 }
@@ -90,8 +92,9 @@ resource azurerm_virtual_machine VM {
     caching       = "${var.storage_os_disk.caching}"
     create_option = "${var.storage_os_disk.create_option}"
     os_type       = "${var.storage_os_disk.os_type}"
+    disk_size_gb  = "${var.storage_os_disk.disk_size_gb}"
   }
-    # This is where the magic to dynamically create storage disk operate
+  # This is where the magic to dynamically create storage disk operate
   dynamic "storage_data_disk" {
     for_each = "${var.data_disk_sizes_gb}"
     content {

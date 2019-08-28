@@ -22,6 +22,7 @@ module "test-basicvm" {
   nic_subnetName          = "${azurerm_subnet.subnet1.name}"
   nic_vnetName            = "${azurerm_virtual_network.test-VNET.name}"
   nic_resource_group_name = "${azurerm_resource_group.test-RG.name}"
+  public_ip               = true
   vm_size                 = "Standard_B4ms"
   data_disk_sizes_gb      = [40, 60]
   storage_image_reference = {
@@ -51,8 +52,31 @@ module "test-basicvm2" {
   nic_enable_ip_forwarding          = false
   nic_enable_accelerated_networking = false
   nic_ip_configuration = {
-    private_ip_address            = "10.10.10.10"
-    private_ip_address_allocation = "Static"
+    private_ip_address            = ["10.10.10.10"]
+    private_ip_address_allocation = ["Static"]
+  }
+  vm_size = "Standard_B4ms"
+  keyvault = {
+    name                = "${azurerm_key_vault.test-keyvault.name}"
+    resource_group_name = "${azurerm_resource_group.test-RG.name}"
+  }
+}
+
+module "test-basicvm3" {
+  source = "../."
+
+  vm_depends_on           = ["${module.test-basicvm.vm}"]
+  name                    = "test3"
+  resource_group_name     = "${azurerm_resource_group.test-RG.name}"
+  admin_username          = "azureadmin"
+  secretPasswordName      = "${azurerm_key_vault_secret.serverPassword.name}"
+  nic_subnetName          = "${azurerm_subnet.subnet1.name}"
+  nic_vnetName            = "${azurerm_virtual_network.test-VNET.name}"
+  nic_resource_group_name = "${azurerm_resource_group.test-RG.name}"
+  public_ip               = true
+  nic_ip_configuration = {
+    private_ip_address            = ["10.10.10.5",null,null]
+    private_ip_address_allocation = ["Static","Dynamic","Dynamic"]
   }
   vm_size = "Standard_B4ms"
   keyvault = {

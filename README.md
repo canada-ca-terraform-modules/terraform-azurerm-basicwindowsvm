@@ -106,17 +106,25 @@ dnsServers = ["10.20.30.40","10.20.30.41]
 
 ### ip configuration object
 
-| Name                          | Type   | Required | Value                                           |
-| ----------------------------- | ------ | -------- | ----------------------------------------------- |
-| private_ip_address            | string | yes      | Static IP desired. Set to null if using Dynamic |
-| private_ip_address_allocation | string | yes      | Set to either Dynamic or Static                 |
-
-Example variable for static ip:
+| Name                          | Type | Required | Value                                                                                                                                                           |
+| ----------------------------- | ---- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| private_ip_address            | list | yes      | List of Static IP desired for each IP allocation. Set each list items to null if using Dynamic allocation or to an static IP part of the subnet is using Static |
+| private_ip_address_allocation | list | yes      | List of IP allocation type for each ip configuration. Set each to either Dynamic or Static                                                                      |
+Default:
 
 ```hcl
 nic_ip_configuration = {
-  private_ip_address            = "10.20.30.42"
-  private_ip_address_allocation = "Static"
+  private_ip_address            = [null]
+  private_ip_address_allocation = ["Dynamic"]
+}
+```
+
+Example variable for a NIC with 2 staticly assigned IP and one dynamic:
+
+```hcl
+nic_ip_configuration = {
+  private_ip_address            = ["10.20.30.42","10.20.40.43",null]
+  private_ip_address_allocation = ["Static","Static","Dynamic"]
 }
 ```
 
@@ -246,6 +254,7 @@ shutdownConfig = {
 
 | Date     | Release    | Change                                                                            |
 | -------- | ---------- | --------------------------------------------------------------------------------- |
+| 20190827 | 20190827.1 | Add support for multiple IP assigned the NIC                                      |
 | 20190823 |            | Update documentation                                                              |
 | 20190819 | 20190819.1 | Add support for one or more managed data disks of configurable size               |
 | 20190813 | 20190813.1 | Add support for joining VM to Active Directory domain                             |
