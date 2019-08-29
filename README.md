@@ -72,6 +72,7 @@ module "jumpbox" {
 | monitoringAgent                    | object | no       | Configure Azure monitoring on VM. Requires configured log analytics workspace. - [monitoring agent](#monitoring-agent-object)                                                                               |
 | antimalware                        | object | no       | Configure Azure antimalware on VM. - [antimalware](#antimalware-object)                                                                                                                                     |
 | shutdownConfig                     | object | no       | Configure desired VM shutdown time - [shutdown config](#shutdown-config-object)                                                                                                                             |
+| license_type                       | string | no       | Configure Azure Hybrid Benefit BYOL type
 
 ### tag object
 
@@ -254,6 +255,7 @@ shutdownConfig = {
 
 | Date     | Release    | Change                                                                            |
 | -------- | ---------- | --------------------------------------------------------------------------------- |
+| 20190829 | 20190829.1 | Add support for optionally specifying Azure Hybrid Benefit BYOL type              |
 | 20190827 | 20190827.1 | Add support for multiple IP assigned the NIC                                      |
 | 20190823 |            | Update documentation                                                              |
 | 20190819 | 20190819.1 | Add support for one or more managed data disks of configurable size               |
