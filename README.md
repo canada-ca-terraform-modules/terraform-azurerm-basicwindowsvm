@@ -218,7 +218,7 @@ monitoringAgent = {
 Example variable:
 
 ```hcl
-antimalware" {
+antimalware = {
   RealtimeProtectionEnabled      = "true"
   ScheduledScanSettingsIsEnabled = "false"
   ScheduledScanSettingsDay       = "7"
