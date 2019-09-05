@@ -96,3 +96,8 @@ variable "keyvault" {
     resource_group_name = ""
   }
 }
+
+variable "license_type" {
+  description = "BYOL license type for those with Azure Hybrid Benefit"
+  default     = null
+}
