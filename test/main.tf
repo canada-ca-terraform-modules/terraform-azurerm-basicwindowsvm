@@ -17,7 +17,7 @@ module "test-basicvm" {
   name                    = "test1"
   resource_group_name     = "${azurerm_resource_group.test-RG.name}"
   admin_username          = "azureadmin"
-  secretPasswordName      = "${azurerm_key_vault_secret.serverPassword.name}"
+  admin_password          = "${azurerm_key_vault_secret.serverPassword.value}"
   custom_data             = "${file("serverconfig/test-init.ps1")}"
   nic_subnetName          = "${azurerm_subnet.subnet1.name}"
   nic_vnetName            = "${azurerm_virtual_network.test-VNET.name}"
@@ -31,10 +31,6 @@ module "test-basicvm" {
     sku       = "2016-Datacenter"
     version   = "latest"
   }
-  keyvault = {
-    name                = "${azurerm_key_vault.test-keyvault.name}"
-    resource_group_name = "${azurerm_resource_group.test-RG.name}"
-  }
 }
 
 module "test-basicvm2" {
@@ -44,7 +40,7 @@ module "test-basicvm2" {
   name                              = "test2"
   resource_group_name               = "${azurerm_resource_group.test-RG.name}"
   admin_username                    = "azureadmin"
-  secretPasswordName                = "${azurerm_key_vault_secret.serverPassword.name}"
+  admin_password          = "${azurerm_key_vault_secret.serverPassword.value}"
   nic_subnetName                    = "${azurerm_subnet.subnet1.name}"
   nic_vnetName                      = "${azurerm_virtual_network.test-VNET.name}"
   nic_resource_group_name           = "${azurerm_resource_group.test-RG.name}"
@@ -56,10 +52,6 @@ module "test-basicvm2" {
     private_ip_address_allocation = ["Static"]
   }
   vm_size = "Standard_B4ms"
-  keyvault = {
-    name                = "${azurerm_key_vault.test-keyvault.name}"
-    resource_group_name = "${azurerm_resource_group.test-RG.name}"
-  }
 }
 
 module "test-basicvm3" {
@@ -69,7 +61,7 @@ module "test-basicvm3" {
   name                    = "test3"
   resource_group_name     = "${azurerm_resource_group.test-RG.name}"
   admin_username          = "azureadmin"
-  secretPasswordName      = "${azurerm_key_vault_secret.serverPassword.name}"
+  admin_password          = "${azurerm_key_vault_secret.serverPassword.value}"
   nic_subnetName          = "${azurerm_subnet.subnet1.name}"
   nic_vnetName            = "${azurerm_virtual_network.test-VNET.name}"
   nic_resource_group_name = "${azurerm_resource_group.test-RG.name}"
@@ -79,8 +71,8 @@ module "test-basicvm3" {
     private_ip_address_allocation = ["Static","Dynamic","Dynamic"]
   }
   vm_size = "Standard_B4ms"
-  keyvault = {
-    name                = "${azurerm_key_vault.test-keyvault.name}"
-    resource_group_name = "${azurerm_resource_group.test-RG.name}"
+  encryptDisks = {
+    KeyVaultResourceId = "${azurerm_key_vault.test-keyvault.id}"
+    KeyVaultURL        = "${azurerm_key_vault.test-keyvault.vault_uri}"
   }
 }

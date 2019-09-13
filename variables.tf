@@ -50,6 +50,37 @@ variable "nic_ip_configuration" {
   }
 }
 
+variable "security_rules" {
+  type = list(map(string))
+  default = [
+    {
+      name                       = "AllowAllInbound"
+      description                = "Allow all in"
+      access                     = "Allow"
+      priority                   = "100"
+      protocol                   = "*"
+      direction                  = "Inbound"
+      source_port_ranges         = "*"
+      source_address_prefix      = "*"
+      destination_port_ranges    = "*"
+      destination_address_prefix = "*"
+    },
+    {
+      name                       = "AllowAllOutbound"
+      description                = "Allow all out"
+      access                     = "Allow"
+      priority                   = "105"
+      protocol                   = "*"
+      direction                  = "Outbound"
+      source_port_ranges         = "*"
+      source_address_prefix      = "*"
+      destination_port_ranges    = "*"
+      destination_address_prefix = "*"
+    }
+  ]
+}
+
+
 variable "public_ip" {
   description = "Should the VM be assigned public IP(s). True or false."
   default     = false
@@ -63,8 +94,8 @@ variable "admin_username" {
   description = "Name of the VM admin account"
 }
 
-variable "secretPasswordName" {
-  description = "Name of the secret containing the VM admin account password"
+variable "admin_password" {
+  description = "Name of the VM admin account"
 }
 
 variable "vm_size" {
@@ -80,20 +111,17 @@ variable "storage_image_reference" {
   }
 }
 
+variable "plan" {
+  description = "An optional plan block"
+  default     = null
+}
+
 variable "storage_os_disk" {
   default = {
     caching       = "ReadWrite"
     create_option = "FromImage"
     os_type       = null
     disk_size_gb  = null
-  }
-}
-
-variable "keyvault" {
-  description = "This block describe the keyvault resource name and resourcegroup name containing the keyvault"
-  default = {
-    name                = ""
-    resource_group_name = ""
   }
 }
 

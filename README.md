@@ -50,7 +50,7 @@ module "jumpbox" {
 | name                               | string | yes      | Name of the vm                                                                                                                                                                                              |
 | resource_group_name                | string | yes      | Name of the resourcegroup that will contain the VM resources                                                                                                                                                |
 | admin_username                     | string | yes      | Name of the VM admin account                                                                                                                                                                                |
-| secretPasswordName                 | string | yes      | Name of the Keyvault secret containing the VM admin account password                                                                                                                                        |
+| admin_password                     | string | yes      | Password of the VM admin account                                                                                                                                                                            |
 | nic_subnetName                     | string | yes      | Name of the subnet to which the VM NIC will connect to                                                                                                                                                      |
 | nic_vnetName                       | string | yes      | Name of the VNET the subnet is part of                                                                                                                                                                      |
 | nic_resource_group_name            | string | yes      | Name of the resourcegroup containing the VNET                                                                                                                                                               |
@@ -65,14 +65,16 @@ module "jumpbox" {
 | nic_ip_configuration               | object | no       | Defines how a private IP address is assigned. Options are Static or Dynamic. In case of Static also specifiy the desired privat IP address. Default: Dynamic - [ip configuration](#ip-configuration-object) |
 | public_ip                          | bool   | no       | Does the VM require a public IP. true or false. Default: false                                                                                                                                              |
 | storage_image_reference            | object | no       | Specify the storage image used to create the VM. Default is 2016-Datacenter. - [storage image](#storage-image-reference-object)                                                                             |
+| plan                               | object | no       | Specify the plan used to create the VM. Default is null. - [plan](#plan-object)                                                                                                                             |
 | storage_os_disk                    | object | no       | Storage OS Disk configuration. Default: ReadWrite from image.                                                                                                                                               |
 | custom_data                        | string | no       | some custom ps1 code to execute. Eg: ${file("serverconfig/jumpbox-init.ps1")}                                                                                                                               |
+| security_rules                     | list   | no       | [Security rules](#securityrules-object) to be applied to the VM nic through an NSG                                                                                                                          |
 | domainToJoin                       | object | no       | Object containing the configuration related to the Active Directory Domain to join. - [domain to join](#domain-join-object)                                                                                 |
-| encryptDisk                        | bool   | no       | Configure if VM disks should be encrypted with Bitlocker. Default false                                                                                                                                     |
+| encryptDisk                        | object | no       | Configure if VM disks should be encrypted with Bitlocker. Default null - [encryptDisk](#encryptDisk-object)                                                                                                 |
 | monitoringAgent                    | object | no       | Configure Azure monitoring on VM. Requires configured log analytics workspace. - [monitoring agent](#monitoring-agent-object)                                                                               |
 | antimalware                        | object | no       | Configure Azure antimalware on VM. - [antimalware](#antimalware-object)                                                                                                                                     |
 | shutdownConfig                     | object | no       | Configure desired VM shutdown time - [shutdown config](#shutdown-config-object)                                                                                                                             |
-| license_type                       | string | no       | Configure Azure Hybrid Benefit BYOL type
+| license_type                       | string | no       | Configure Azure Hybrid Benefit BYOL type                                                                                                                                                                    |
 
 ### tag object
 
@@ -149,20 +151,68 @@ storage_image_reference = {
 }
 ```
 
-### keyvault object
+### plan object
 
-| Name                | Type   | Required | Value                                                    |
-| ------------------- | ------ | -------- | -------------------------------------------------------- |
-| name                | string | yes      | Name of the keyvault resource                            |
-| resource_group_name | string | yes      | Name of the resource group where the keyvault is located |
+| Name      | Type   | Required | Value               |
+| --------- | ------ | -------- | ------------------- |
+| name      | string | yes      | The plan nome.      |
+| publisher | string | yes      | The publisher name. |
+| product   | string | yes      | The product name.   |
 
 Example variable:
 
 ```hcl
-keyvault = {
-  name                = "some-keyvault-name"
-  resource_group_name = "some-resource-group-name"
+plan = {
+    name      = "fortinet-fortimanager"
+    publisher = "fortinet"
+    product   = "fortinet-fortimanager"
 }
+```
+
+### securityrules object
+
+| Name                       | Type   | Required | Value                                                                                                                                                                                                              |
+| -------------------------- | ------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| name                       | string | yes      | The name of the security rule.                                                                                                                                                                                     |
+| description                | string | yes      | A description for this rule. Restricted to 140 characters.                                                                                                                                                         |
+| access                     | string | yes      | Specifies whether network traffic is allowed or denied. Possible values are Allow and Deny.                                                                                                                        |
+| priority                   | string | yes      | Specifies the priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule. |
+| protocol                   | string | yes      | Network protocol this rule applies to. Can be Tcp, Udp or * to match both.                                                                                                                                         |
+| direction                  | string | yes      | The direction specifies if rule will be evaluated on incoming or outgoing traffic. Possible values are Inbound and Outbound.                                                                                       |
+| source_port_ranges         | string | yes      | List of source ports or port ranges.                                                                                                                                                                               |
+| source_address_prefix      | string | yes      | CIDR or source IP range or * to match any IP. Tags such as ‘VirtualNetwork’, ‘AzureLoadBalancer’ and ‘Internet’ can also be used.                                                                                  |
+| destination_port_ranges    | string | yes      | Destination Port or Range. Integer or range between 0 and 65535 or * to match any.                                                                                                                                 |
+| destination_address_prefix | string | yes      | CIDR or destination IP range or * to match any IP. Tags such as ‘VirtualNetwork’, ‘AzureLoadBalancer’ and ‘Internet’ can also be used.                                                                             |
+
+Example variable:
+
+```hcl
+security_rules = [
+    {
+      name                       = "AllowAllInbound"
+      description                = "Allow all in"
+      access                     = "Allow"
+      priority                   = "100"
+      protocol                   = "*"
+      direction                  = "Inbound"
+      source_port_ranges         = "*"
+      source_address_prefix      = "*"
+      destination_port_ranges    = "*"
+      destination_address_prefix = "*"
+    },
+    {
+      name                       = "AllowAllOutbound"
+      description                = "Allow all out"
+      access                     = "Allow"
+      priority                   = "105"
+      protocol                   = "*"
+      direction                  = "Outbound"
+      source_port_ranges         = "*"
+      source_address_prefix      = "*"
+      destination_port_ranges    = "*"
+      destination_address_prefix = "*"
+    }
+  ]
 ```
 
 ### domain join object
@@ -171,7 +221,7 @@ keyvault = {
 | -------------------- | ------- | -------- | ----------------------------------------------------------- |
 | domainToJoin         | string  | Yes      | Name of the domain to join. Eg. test.gc.ca.local            |
 | domainUsername       | string  | Yes      | Name of domain admin account to use to join the domain      |
-| domainUserSecretName | string  | Yes      | Name of secret containing the domain admin account password |
+| domainPassword       | string  | Yes      | Password of domain admin account to use to join the domain  |
 | domainJoinOptions    | integer | Yes      | Domain join option. Recommended value: 3                    |
 | ouPath               | string  | Yes      | Path for the domain ou. Leave empty in most cases. Eg: ""   |
 
@@ -181,7 +231,7 @@ Example variable:
 domainToJoin = {
   domainName           = "test.com"
   domainUsername       = "azureadmin"
-  domainUserSecretName = "adDefaultPassword"
+  domainPassword       = "somePassword"
   domainJoinOptions    = 3
   ouPath               = ""
 }
@@ -228,6 +278,22 @@ antimalware" {
   ExclusionsExtensions           = ""
   ExclusionsPaths                = ""
   ExclusionsProcesses            = ""
+}
+```
+
+### encryptDisk object
+
+| Name               | Type   | Required | Value                                                           |
+| ------------------ | ------ | -------- | --------------------------------------------------------------- |
+| KeyVaultResourceId | string | Yes      | ID of the keyvault resource that will store the encryption keys |
+| KeyVaultURL        | string | Yes      | URL of the keyvault that will store the encryption keys         |
+
+Example variable:
+
+```hcl
+encryptDisks = {
+  KeyVaultResourceId = "${azurerm_key_vault.test-keyvault.id}"
+  KeyVaultURL        = "${azurerm_key_vault.test-keyvault.vault_uri}"
 }
 ```
 

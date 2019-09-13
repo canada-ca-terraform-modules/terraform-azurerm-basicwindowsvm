@@ -4,7 +4,7 @@ Example of domain to join variable declaration:
 domainToJoin = {
   domainName           = "test.com"
   domainUsername       = "azureadmin"
-  domainUserSecretName = "adDefaultPassword"
+  domainPassword       = "somePassword"
   domainJoinOptions    = 3
   ouPath               = ""
 }
@@ -14,12 +14,6 @@ domainToJoin = {
 variable "domainToJoin" {
   description = "Object containing the parameters for the domain to join"
   default     = null
-}
-
-data "azurerm_key_vault_secret" "domainPassword" {
-  count        = "${var.domainToJoin == null ? 0 : 1}"
-  name         = "${var.domainToJoin.domainUserSecretName}"
-  key_vault_id = "${data.azurerm_key_vault.keyvaultsecrets.id}"
 }
 
 resource "azurerm_virtual_machine_extension" "DomainJoinExtension" {
@@ -46,7 +40,7 @@ resource "azurerm_virtual_machine_extension" "DomainJoinExtension" {
 
   protected_settings = <<PROTECTED_SETTINGS
         {
-          "Password": "${data.azurerm_key_vault_secret.domainPassword[0].value}"
+          "Password": "${var.domainToJoin.domainPassword}"
         }
   PROTECTED_SETTINGS
 

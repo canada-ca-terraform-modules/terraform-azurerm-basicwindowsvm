@@ -1,18 +1,21 @@
 /*
 Example:
 
-diskEncrypt = true
+encryptDisks = {
+  KeyVaultResourceId = "${azurerm_key_vault.test-keyvault.id}"
+  KeyVaultURL        = "${azurerm_key_vault.test-keyvault.vault_uri}"
+}
 
 */
 
 variable "encryptDisks" {
   description = "Should the VM disks be encrypted"
-  default     = false
+  default     = null
 }
 
 resource "azurerm_virtual_machine_extension" "AzureDiskEncryption" {
 
-  count                      = "${var.encryptDisks == false ? 0 : 1}"
+  count                      = "${var.encryptDisks == null ? 0 : 1}"
   name                       = "AzureDiskEncryption"
   depends_on                 = ["azurerm_virtual_machine_extension.DomainJoinExtension"]
   location                   = "${var.location}"
@@ -26,8 +29,8 @@ resource "azurerm_virtual_machine_extension" "AzureDiskEncryption" {
   settings = <<SETTINGS
         {  
           "EncryptionOperation": "EnableEncryption",
-          "KeyVaultResourceId": "${data.azurerm_key_vault.keyvaultsecrets.id}",
-          "KeyVaultURL": "${data.azurerm_key_vault.keyvaultsecrets.vault_uri}",
+          "KeyVaultResourceId": "${var.encryptDisks.KeyVaultResourceId}",
+          "KeyVaultURL": "${var.encryptDisks.KeyVaultURL}",
           "KeyEncryptionAlgorithm": "RSA-OAEP",
           "VolumeType": "All",
           "ResizeOSDisk": false
