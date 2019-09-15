@@ -26,7 +26,7 @@ Optional (depending on options configured):
 
 ```terraform
 module "jumpbox" {
-  source = "github.com/canada-ca-terraform-modules/basicwindowsvm?ref=20190819.1"
+  source = "github.com/canada-ca-terraform-modules/basicwindowsvm?ref=20190915.1"
 
   name                              = "jumpbox"
   resource_group_name               = "some-RG-Name"
@@ -321,6 +321,9 @@ shutdownConfig = {
 
 | Date     | Release    | Change                                                                            |
 | -------- | ---------- | --------------------------------------------------------------------------------- |
+| 20190915 | 20190915.1 | Remove the need to internally handle keyvault secrets.                            |
+|          |            | Update resource names to align with new naming convention                         |
+|          |            | Update how encryptDisk is handled given the removal of the keyvault variable      |
 | 20190829 | 20190829.1 | Add support for optionally specifying Azure Hybrid Benefit BYOL type              |
 | 20190827 | 20190827.1 | Add support for multiple IP assigned the NIC                                      |
 | 20190823 |            | Update documentation                                                              |
