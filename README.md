@@ -31,15 +31,11 @@ module "jumpbox" {
   name                              = "jumpbox"
   resource_group_name               = "some-RG-Name"
   admin_username                    = "someusername"
-  secretPasswordName                = "somekeyvaultsecretname"
+  admin_password                    = "${azurerm_key_vault_secret.thevmpassword.name}"
   nic_subnetName                    = "some-subnet-name"
   nic_vnetName                      = "some-vnet-name"
   nic_resource_group_name           = "some-vnet-resourcegroup-name"
   vm_size                           = "Standard_D2_v3"
-  keyvault = {
-    name                = "some-keyvault-name"
-    resource_group_name = "some-keyvault-resourcegroup-name"
-  }
 }
 ```
 
@@ -55,7 +51,6 @@ module "jumpbox" {
 | nic_vnetName                       | string | yes      | Name of the VNET the subnet is part of                                                                                                                                                                      |
 | nic_resource_group_name            | string | yes      | Name of the resourcegroup containing the VNET                                                                                                                                                               |
 | vm_size                            | string | yes      | Specifies the desired size of the Virtual Machine. Eg: Standard_F4                                                                                                                                          |
-| keyvault                           | object | yes      | Object containing keyvault resource configuration. - [keyvault](#keyvault-object)                                                                                                                           |
 | location                           | string | no       | Azure location for resources. Default: canadacentral                                                                                                                                                        |
 | tags                               | object | no       | Object containing a tag values - [tags pairs](#tag-object)                                                                                                                                                  |
 | data_disk_sizes_gb                 | list   | no       | List of data disk sizes in gigabytes required for the VM. - [data disk](#data-disk-list)                                                                                                                    |
@@ -217,13 +212,13 @@ security_rules = [
 
 ### domain join object
 
-| Name                 | Type    | Required | Value                                                       |
-| -------------------- | ------- | -------- | ----------------------------------------------------------- |
-| domainToJoin         | string  | Yes      | Name of the domain to join. Eg. test.gc.ca.local            |
-| domainUsername       | string  | Yes      | Name of domain admin account to use to join the domain      |
-| domainPassword       | string  | Yes      | Password of domain admin account to use to join the domain  |
-| domainJoinOptions    | integer | Yes      | Domain join option. Recommended value: 3                    |
-| ouPath               | string  | Yes      | Path for the domain ou. Leave empty in most cases. Eg: ""   |
+| Name              | Type    | Required | Value                                                      |
+| ----------------- | ------- | -------- | ---------------------------------------------------------- |
+| domainToJoin      | string  | Yes      | Name of the domain to join. Eg. test.gc.ca.local           |
+| domainUsername    | string  | Yes      | Name of domain admin account to use to join the domain     |
+| domainPassword    | string  | Yes      | Password of domain admin account to use to join the domain |
+| domainJoinOptions | integer | Yes      | Domain join option. Recommended value: 3                   |
+| ouPath            | string  | Yes      | Path for the domain ou. Leave empty in most cases. Eg: ""  |
 
 Example variable:
 
@@ -321,6 +316,7 @@ shutdownConfig = {
 
 | Date     | Release    | Change                                                                            |
 | -------- | ---------- | --------------------------------------------------------------------------------- |
+| 20190916 |            | Update README                                                                     |
 | 20190915 | 20190915.1 | Remove the need to internally handle keyvault secrets.                            |
 |          |            | Update resource names to align with new naming convention                         |
 |          |            | Update how encryptDisk is handled given the removal of the keyvault variable      |
