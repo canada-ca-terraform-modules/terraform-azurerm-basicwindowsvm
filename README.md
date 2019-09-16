@@ -217,13 +217,13 @@ security_rules = [
 
 ### domain join object
 
-| Name                 | Type    | Required | Value                                                       |
-| -------------------- | ------- | -------- | ----------------------------------------------------------- |
-| domainToJoin         | string  | Yes      | Name of the domain to join. Eg. test.gc.ca.local            |
-| domainUsername       | string  | Yes      | Name of domain admin account to use to join the domain      |
-| domainPassword       | string  | Yes      | Password of domain admin account to use to join the domain  |
-| domainJoinOptions    | integer | Yes      | Domain join option. Recommended value: 3                    |
-| ouPath               | string  | Yes      | Path for the domain ou. Leave empty in most cases. Eg: ""   |
+| Name                 | Type    | Required | Value                                                                                     |
+| -------------------- | ------- | -------- | ----------------------------------------------------------------------------------------- |
+| domainToJoin         | string  | Yes      | Name of the domain to join. Eg. test.gc.ca.local                                           |
+| domainUsername       | string  | Yes      | Name of domain admin account to use to join the domain                                    |
+| domainUserSecretName | string  | Yes      | NAme of Secret that holds the Password of domain admin account to use to join the domain  |
+| domainJoinOptions    | integer | Yes      | Domain join option. Recommended value: 3                                                    |
+| ouPath               | string  | Yes      | Path for the domain ou. Leave empty in most cases. Eg: ""                                 |
 
 Example variable:
 
