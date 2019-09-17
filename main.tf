@@ -72,6 +72,7 @@ resource azurerm_virtual_machine VM {
   vm_size                          = "${var.vm_size}"
   network_interface_ids            = ["${azurerm_network_interface.NIC.id}"]
   primary_network_interface_id     = "${azurerm_network_interface.NIC.id}"
+  availability_set_id  = "${var.availability_set_id}"
   delete_data_disks_on_termination = "true"
   delete_os_disk_on_termination    = "true"
   license_type                     = "${var.license_type == null ? null : var.license_type}"

@@ -36,6 +36,7 @@ module "jumpbox" {
   nic_vnetName                      = "some-vnet-name"
   nic_resource_group_name           = "some-vnet-resourcegroup-name"
   vm_size                           = "Standard_D2_v3"
+  availability_set_id               = "some-availability-set-id"
 }
 ```
 
@@ -52,6 +53,7 @@ module "jumpbox" {
 | nic_resource_group_name            | string | yes      | Name of the resourcegroup containing the VNET                                                                                                                                                               |
 | vm_size                            | string | yes      | Specifies the desired size of the Virtual Machine. Eg: Standard_F4                                                                                                                                          |
 | location                           | string | no       | Azure location for resources. Default: canadacentral                                                                                                                                                        |
+| availability_set_id                | string | no       | Id of the availaiblity set to join.  Default is null.
 | tags                               | object | no       | Object containing a tag values - [tags pairs](#tag-object)                                                                                                                                                  |
 | data_disk_sizes_gb                 | list   | no       | List of data disk sizes in gigabytes required for the VM. - [data disk](#data-disk-list)                                                                                                                    |
 | dnsServers                         | list   | no       | List of DNS servers IP addresses as string to use for this NIC, overrides the VNet-level dns server list - [dns servers](#dns-servers-list)                                                                 |
