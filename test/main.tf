@@ -6,7 +6,7 @@ provider "azurerm" {
 }
 
 locals {
-  template_name = "basicwindowsvm"
+  template_name = "basicwindowvm"
 }
 
 data "azurerm_client_config" "current" {}

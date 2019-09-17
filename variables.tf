@@ -129,3 +129,8 @@ variable "license_type" {
   description = "BYOL license type for those with Azure Hybrid Benefit"
   default     = null
 }
+
+variable "availability_set_id" {
+  description = "Sets the id for the availability set to use for the VM"
+  default = ""
+}
