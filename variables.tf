@@ -50,6 +50,11 @@ variable "nic_ip_configuration" {
   }
 }
 
+variable "load_balancer_backend_address_pools_ids" {
+  description = "List of Load Balancer Backend Address Pool IDs references to which this NIC belongs"
+  default     = [[], [], [], [], [], [], [], [], [], [], [], []]
+}
+
 variable "security_rules" {
   type = list(map(string))
   default = [
@@ -98,6 +103,14 @@ variable "admin_password" {
   description = "Name of the VM admin account"
 }
 
+variable "os_managed_disk_type" {
+  default = "Standard_LRS"
+}
+
+variable "data_managed_disk_type" {
+  default = "Standard_LRS"
+}
+
 variable "vm_size" {
   description = "Specifies the size of the Virtual Machine. Eg: Standard_F4"
 }
@@ -133,4 +146,8 @@ variable "license_type" {
 variable "availability_set_id" {
   description = "Sets the id for the availability set to use for the VM"
   default = ""
+}
+
+variable "boot_diagnostic" {
+  default = false
 }

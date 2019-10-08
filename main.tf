@@ -31,6 +31,15 @@ resource azurerm_network_security_group NSG {
   tags = "${var.tags}"
 }
 
+resource "azurerm_storage_account" "boot_diagnostic" {
+  count                    = var.boot_diagnostic ? 1 : 0
+  name                     = "${local.storageName}"
+  resource_group_name      = "${var.resource_group_name}"
+  location                 = "${var.location}"
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+}
+
 # If public_ip is true then create resource. If not then do not create any
 resource azurerm_public_ip VM-EXT-PubIP {
   count               = var.public_ip ? length(var.nic_ip_configuration.private_ip_address_allocation) : 0
@@ -53,12 +62,13 @@ resource azurerm_network_interface NIC {
   dynamic "ip_configuration" {
     for_each = var.nic_ip_configuration.private_ip_address_allocation
     content {
-      name                          = "ipconfig${ip_configuration.key + 1}"
-      subnet_id                     = data.azurerm_subnet.subnet.id
-      private_ip_address            = var.nic_ip_configuration.private_ip_address[ip_configuration.key]
-      private_ip_address_allocation = var.nic_ip_configuration.private_ip_address_allocation[ip_configuration.key]
-      public_ip_address_id          = var.public_ip ? azurerm_public_ip.VM-EXT-PubIP[ip_configuration.key].id : ""
-      primary                       = ip_configuration.key == 0 ? true : false
+      name                                    = "ipconfig${ip_configuration.key + 1}"
+      subnet_id                               = data.azurerm_subnet.subnet.id
+      private_ip_address                      = var.nic_ip_configuration.private_ip_address[ip_configuration.key]
+      private_ip_address_allocation           = var.nic_ip_configuration.private_ip_address_allocation[ip_configuration.key]
+      public_ip_address_id                    = var.public_ip ? azurerm_public_ip.VM-EXT-PubIP[ip_configuration.key].id : ""
+      primary                                 = ip_configuration.key == 0 ? true : false
+      load_balancer_backend_address_pools_ids = var.load_balancer_backend_address_pools_ids[ip_configuration.key]
     }
   }
   tags = "${var.tags}"
@@ -72,7 +82,7 @@ resource azurerm_virtual_machine VM {
   vm_size                          = "${var.vm_size}"
   network_interface_ids            = ["${azurerm_network_interface.NIC.id}"]
   primary_network_interface_id     = "${azurerm_network_interface.NIC.id}"
-  availability_set_id  = "${var.availability_set_id}"
+  availability_set_id              = "${var.availability_set_id}"
   delete_data_disks_on_termination = "true"
   delete_os_disk_on_termination    = "true"
   license_type                     = "${var.license_type == null ? null : var.license_type}"
@@ -91,8 +101,8 @@ resource azurerm_virtual_machine VM {
   dynamic "plan" {
     for_each = "${local.plan}"
     content {
-      name = "${local.plan[0].name}"
-      product = "${local.plan[0].product}"
+      name      = "${local.plan[0].name}"
+      product   = "${local.plan[0].product}"
       publisher = "${local.plan[0].publisher}"
     }
   }
@@ -105,6 +115,7 @@ resource azurerm_virtual_machine VM {
     create_option = "${var.storage_os_disk.create_option}"
     os_type       = "${var.storage_os_disk.os_type}"
     disk_size_gb  = "${var.storage_os_disk.disk_size_gb}"
+    managed_disk_type = "${var.os_managed_disk_type}"
   }
   # This is where the magic to dynamically create storage disk operate
   dynamic "storage_data_disk" {
@@ -115,6 +126,14 @@ resource azurerm_virtual_machine VM {
       lun           = "${storage_data_disk.key}"
       disk_size_gb  = "${storage_data_disk.value}"
       caching       = "ReadWrite"
+      managed_disk_type = "${var.data_managed_disk_type}"
+    }
+  }
+  dynamic "boot_diagnostics" {
+    for_each = "${local.boot_diagnostic}"
+    content {
+      enabled     = true
+      storage_uri = azurerm_storage_account.boot_diagnostic[0].primary_blob_endpoint
     }
   }
   tags = "${var.tags}"

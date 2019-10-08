@@ -17,6 +17,7 @@ data "azurerm_log_analytics_workspace" "logAnalyticsWS" {
   count               = "${var.monitoringAgent == null ? 0 : 1}"
   name                = "${var.monitoringAgent.log_analytics_workspace_name}"
   resource_group_name = "${var.monitoringAgent.log_analytics_workspace_resource_group_name}"
+  depends_on          = [var.vm_depends_on]
 }
 
 resource "azurerm_virtual_machine_extension" "MicrosoftMonitoringAgent" {

@@ -4,3 +4,7 @@ data "azurerm_subnet" "subnet" {
   resource_group_name  = "${var.nic_resource_group_name}"
 }
 
+data "azurerm_resource_group" "resourceGroup" {
+  name = "${var.resource_group_name}"
+}
+

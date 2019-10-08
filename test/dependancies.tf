@@ -17,7 +17,7 @@ resource "azurerm_subnet" "subnet1" {
 }
 
 resource "azurerm_key_vault" "test-keyvault" {
-  name                            = "test-${substr(sha1("${data.azurerm_client_config.current.subscription_id}${azurerm_resource_group.test-RG.name}"),0,8)}-kv"
+  name                            = "test-${substr(sha1("${data.azurerm_client_config.current.subscription_id}${azurerm_resource_group.test-RG.name}"), 0, 8)}-kv"
   location                        = "${var.location}"
   resource_group_name             = "${azurerm_resource_group.test-RG.name}"
   sku_name                        = "standard"
@@ -27,7 +27,7 @@ resource "azurerm_key_vault" "test-keyvault" {
   enabled_for_template_deployment = true
   access_policy {
     tenant_id = "${data.azurerm_client_config.current.tenant_id}"
-    object_id = "267cced3-2154-43ff-b79b-b12c331ad1d1"
+    object_id = "${data.azurerm_client_config.current.service_principal_object_id}"
     key_permissions = [
       "Get",
       "List",

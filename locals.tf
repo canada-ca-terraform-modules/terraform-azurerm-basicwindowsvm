@@ -2,4 +2,8 @@
 
 locals {
   plan = var.plan == null ? [] : [var.plan]
+  boot_diagnostic = var.boot_diagnostic ? ["1"] : []
+  unique          = "${substr(sha1("${data.azurerm_resource_group.resourceGroup.id}"), 0, 8)}"
+  fixname         = "${replace("${var.name}", "-", "")}"
+  storageName     = "${lower("${local.fixname}diag${local.unique}")}"
 }
