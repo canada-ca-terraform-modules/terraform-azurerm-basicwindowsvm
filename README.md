@@ -322,6 +322,7 @@ shutdownConfig = {
 
 | Date     | Release    | Change                                                                            |
 | -------- | ---------- | --------------------------------------------------------------------------------- |
+| 20191015 | 20191015.1 | Adopt new VM resource naming convention                                           |
 | 20191008 | 20191008.1 | Adding support for os and data managed disk type                                  |
 |          |            | Add support for LB backend pool IDs                                               |
 |          |            | Adding boot diagnostic option                                                     |
