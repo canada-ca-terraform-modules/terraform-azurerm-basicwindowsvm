@@ -70,6 +70,7 @@ module "jumpbox" {
 | security_rules                          | list   | no       | [Security rules](#securityrules-object) to be applied to the VM nic through an NSG                                                                                                                          |
 | domainToJoin                            | object | no       | Object containing the configuration related to the Active Directory Domain to join. - [domain to join](#domain-join-object)                                                                                 |
 | encryptDisk                             | object | no       | Configure if VM disks should be encrypted with Bitlocker. Default null - [encryptDisk](#encryptDisk-object)                                                                                                 |
+| dependancyAgent                         | bool   | no       | Installs the dependancy agent for service map integration. Default: false                                                                      
 | monitoringAgent                         | object | no       | Configure Azure monitoring on VM. Requires configured log analytics workspace. - [monitoring agent](#monitoring-agent-object)                                                                               |
 | antimalware                             | object | no       | Configure Azure antimalware on VM. - [antimalware](#antimalware-object)                                                                                                                                     |
 | shutdownConfig                          | object | no       | Configure desired VM shutdown time - [shutdown config](#shutdown-config-object)                                                                                                                             |
@@ -339,3 +340,5 @@ shutdownConfig = {
 | 20190806 | 20190806.1 | Add custom dns servers support                                                    |
 | 20190729 | 20190729.1 | Fix bug where custo-script would not properly be installed                        |
 | 20190725 | 20190725.1 | 1st deploy                                                                        |
+| 20191212 | 20191212.1 | Added support for the depandancy agent for service map integration                |
+|          |            | Removed interpoolations no longer required by terraform v0.12
