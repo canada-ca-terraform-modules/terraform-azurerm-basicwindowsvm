@@ -341,4 +341,5 @@ shutdownConfig = {
 | 20190729 | 20190729.1 | Fix bug where custo-script would not properly be installed                        |
 | 20190725 | 20190725.1 | 1st deploy                                                                        |
 | 20191212 | 20191212.1 | Added support for the depandancy agent for service map integration                |
-|          |            | Removed interpoolations no longer required by terraform v0.12
+|          |            | Removed interpoolations no longer required by terraform v0.12                     |
+|          | 20191212.2 | Fixed typo in osdisk caused by last change                                        |
