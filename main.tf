@@ -110,7 +110,7 @@ resource azurerm_virtual_machine VM {
     provision_vm_agent = true
   }
   storage_os_disk {
-    name          = "${var.name}-osdisk"
+    name          = "${var.name}-osdisk1"
     caching       = var.storage_os_disk.caching
     create_option = var.storage_os_disk.create_option
     os_type       = var.storage_os_disk.os_type
