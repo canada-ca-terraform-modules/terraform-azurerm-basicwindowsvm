@@ -17,7 +17,6 @@ variable "domainToJoin" {
 }
 
 resource "azurerm_virtual_machine_extension" "DomainJoinExtension" {
-
   count                = var.domainToJoin == null ? 0 : 1
   name                 = "DomainJoinExtension"
   depends_on           = [azurerm_virtual_machine_extension.CustomScriptExtension]
