@@ -1,33 +1,33 @@
 resource "azurerm_resource_group" "test-RG" {
   name     = "test-${local.template_name}-rg"
-  location = "${var.location}"
+  location = var.location
 }
 
 resource "azurerm_virtual_network" "test-VNET" {
   name                = "test-vnet"
-  location            = "${var.location}"
-  resource_group_name = "${azurerm_resource_group.test-RG.name}"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.test-RG.name
   address_space       = ["10.10.10.0/23"]
 }
 resource "azurerm_subnet" "subnet1" {
   name                 = "subnet1-snet"
-  virtual_network_name = "${azurerm_virtual_network.test-VNET.name}"
-  resource_group_name  = "${azurerm_resource_group.test-RG.name}"
+  virtual_network_name = azurerm_virtual_network.test-VNET.name
+  resource_group_name  = azurerm_resource_group.test-RG.name
   address_prefix       = "10.10.10.0/27"
 }
 
 resource "azurerm_key_vault" "test-keyvault" {
   name                            = "test-${substr(sha1("${data.azurerm_client_config.current.subscription_id}${azurerm_resource_group.test-RG.name}"), 0, 8)}-kv"
-  location                        = "${var.location}"
-  resource_group_name             = "${azurerm_resource_group.test-RG.name}"
+  location                        = var.location
+  resource_group_name             = azurerm_resource_group.test-RG.name
   sku_name                        = "standard"
-  tenant_id                       = "${data.azurerm_client_config.current.tenant_id}"
+  tenant_id                       = data.azurerm_client_config.current.tenant_id
   enabled_for_deployment          = true
   enabled_for_disk_encryption     = true
   enabled_for_template_deployment = true
   access_policy {
-    tenant_id = "${data.azurerm_client_config.current.tenant_id}"
-    object_id = "${data.azurerm_client_config.current.service_principal_object_id}"
+    tenant_id = data.azurerm_client_config.current.tenant_id
+    object_id = data.azurerm_client_config.current.service_principal_object_id
     key_permissions = [
       "Get",
       "List",
@@ -71,5 +71,12 @@ resource "azurerm_key_vault" "test-keyvault" {
 resource "azurerm_key_vault_secret" "serverPassword" {
   name         = "serverPassword"
   value        = "Canada123!"
-  key_vault_id = "${azurerm_key_vault.test-keyvault.id}"
+  key_vault_id = azurerm_key_vault.test-keyvault.id
+}
+
+resource "azurerm_log_analytics_workspace" "logAnalyticsWS" {
+  name                = "test-${substr(sha1("${data.azurerm_client_config.current.subscription_id}${azurerm_resource_group.test-RG.name}"), 0, 8)}-law"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.test-RG.name
+  sku                 = "pergb2018"
 }

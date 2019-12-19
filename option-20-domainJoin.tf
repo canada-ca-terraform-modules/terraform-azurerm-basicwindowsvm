@@ -18,12 +18,12 @@ variable "domainToJoin" {
 
 resource "azurerm_virtual_machine_extension" "DomainJoinExtension" {
 
-  count                = "${var.domainToJoin == null ? 0 : 1}"
+  count                = var.domainToJoin == null ? 0 : 1
   name                 = "DomainJoinExtension"
-  depends_on           = ["azurerm_virtual_machine_extension.CustomScriptExtension"]
-  location             = "${var.location}"
-  resource_group_name  = "${var.resource_group_name}"
-  virtual_machine_name = "${azurerm_virtual_machine.VM.name}"
+  depends_on           = [azurerm_virtual_machine_extension.CustomScriptExtension]
+  location             = var.location
+  resource_group_name  = var.resource_group_name
+  virtual_machine_name = azurerm_virtual_machine.VM.name
   publisher            = "Microsoft.Compute"
   type                 = "JsonADDomainExtension"
   type_handler_version = "1.3"
@@ -44,5 +44,5 @@ resource "azurerm_virtual_machine_extension" "DomainJoinExtension" {
         }
   PROTECTED_SETTINGS
 
-  tags = "${var.tags}"
+  tags = var.tags
 }

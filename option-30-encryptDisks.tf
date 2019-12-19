@@ -2,8 +2,8 @@
 Example:
 
 encryptDisks = {
-  KeyVaultResourceId = "${azurerm_key_vault.test-keyvault.id}"
-  KeyVaultURL        = "${azurerm_key_vault.test-keyvault.vault_uri}"
+  KeyVaultResourceId = azurerm_key_vault.test-keyvault.id
+  KeyVaultURL        = azurerm_key_vault.test-keyvault.vault_uri
 }
 
 */
@@ -15,12 +15,12 @@ variable "encryptDisks" {
 
 resource "azurerm_virtual_machine_extension" "AzureDiskEncryption" {
 
-  count                      = "${var.encryptDisks == null ? 0 : 1}"
+  count                      = var.encryptDisks == null ? 0 : 1
   name                       = "AzureDiskEncryption"
-  depends_on                 = ["azurerm_virtual_machine_extension.DomainJoinExtension"]
-  location                   = "${var.location}"
-  resource_group_name        = "${var.resource_group_name}"
-  virtual_machine_name       = "${azurerm_virtual_machine.VM.name}"
+  depends_on                 = [azurerm_virtual_machine_extension.DomainJoinExtension]
+  location                   = var.location
+  resource_group_name        = var.resource_group_name
+  virtual_machine_name       = azurerm_virtual_machine.VM.name
   publisher                  = "Microsoft.Azure.Security"
   type                       = "AzureDiskEncryption"
   type_handler_version       = "2.2"
@@ -37,5 +37,5 @@ resource "azurerm_virtual_machine_extension" "AzureDiskEncryption" {
         }
   SETTINGS
 
-  tags = "${var.tags}"
+  tags = var.tags
 }

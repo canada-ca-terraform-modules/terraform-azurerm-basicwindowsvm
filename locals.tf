@@ -3,9 +3,9 @@
 locals {
   plan            = var.plan == null ? [] : [var.plan]
   boot_diagnostic = var.boot_diagnostic ? ["1"] : []
-  unique          = "${substr(sha1("${data.azurerm_resource_group.resourceGroup.id}"), 0, 8)}"
-  fixname         = "${replace("${var.name}", "-", "")}"
-  fixname2        = "${replace("${local.fixname}", "_", "")}"
-  fixname3        = "${substr("${local.fixname2}diag", 0, 16)}"
-  storageName     = "${lower("${local.fixname3}${local.unique}")}"
+  unique          = substr(sha1(data.azurerm_resource_group.resourceGroup.id), 0, 8)
+  fixname         = replace(var.name, "-", "")
+  fixname2        = replace(local.fixname, "_", "")
+  fixname3        = substr("${local.fixname2}diag", 0, 16)
+  storageName     = lower("${local.fixname3}${local.unique}")
 }
