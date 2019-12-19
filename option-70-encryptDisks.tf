@@ -17,7 +17,7 @@ resource "azurerm_virtual_machine_extension" "AzureDiskEncryption" {
 
   count                      = var.encryptDisks == null ? 0 : 1
   name                       = "AzureDiskEncryption"
-  depends_on                 = [azurerm_virtual_machine_extension.DomainJoinExtension]
+  depends_on                 = [azurerm_template_deployment.autoshutdown]
   location                   = var.location
   resource_group_name        = var.resource_group_name
   virtual_machine_name       = azurerm_virtual_machine.VM.name

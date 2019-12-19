@@ -17,7 +17,7 @@ resource "azurerm_virtual_machine_extension" "MicrosoftMonitoringAgent" {
 
   count                      = var.monitoringAgent == null ? 0 : 1
   name                       = "MicrosoftMonitoringAgent"
-  depends_on                 = [azurerm_virtual_machine_extension.AzureDiskEncryption]
+  depends_on                 = [azurerm_virtual_machine_extension.DAAgentForWindows]
   location                   = var.location
   resource_group_name        = var.resource_group_name
   virtual_machine_name       = azurerm_virtual_machine.VM.name
