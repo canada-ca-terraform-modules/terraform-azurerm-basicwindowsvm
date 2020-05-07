@@ -1,5 +1,9 @@
 # Terraform Basic Windows Virtual Machine
 
+## Deprecation notice
+
+This module is no longer maintained and has been replaced with the following module: https://github.com/canada-ca-terraform-modules/terraform-azurerm_windows_virtual_machine
+
 ## Introduction
 
 This module deploys a simple [virtual machine resource](https://docs.microsoft.com/en-us/azure/templates/microsoft.compute/2019-03-01/virtualmachines) with an NSG, 1 NIC, a simple OS Disk. Multiple optional configuration can be applied. See [variables values](#Variables-Values) for details.
